@@ -5,6 +5,15 @@ use serde::{Deserialize, Deserializer};
 use std::{sync::Arc, time::SystemTime};
 use tokio::signal::{self};
 
+pub fn now() -> usize {
+    SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .unwrap()
+        .as_secs()
+        .try_into()
+        .unwrap()
+}
+
 pub async fn shutdown_signal() {
     let ctrl_c = async {
         signal::ctrl_c()
