@@ -1,5 +1,6 @@
 use sea_orm::{DbErr, RuntimeErr};
 use std::fmt::{Display, Formatter, Result};
+use tonic::{Code, Status};
 use validator::ValidationErrors;
 
 #[derive(Debug, thiserror::Error)]
@@ -65,6 +66,10 @@ impl Display for AppError {
 }
 
 impl AppError {
+    pub fn from_validation_errors(error: ValidationErrors) -> Self {
+        Self::Validation(error)
+    }
+
     pub fn from_generic_error<E>(error: E) -> Self
     where
         E: std::error::Error + Send + Sync + 'static,
@@ -100,5 +105,56 @@ fn is_unique_violation(err: &DbErr) -> bool {
             }
         }
         _ => false,
+    }
+}
+
+impl From<AppError> for Status {
+    fn from(value: AppError) -> Self {
+        match value {
+            AppError::Database(error) => {
+                log::error!("[database_error]: {:?}", error);
+                Status::new(Code::Internal, error.to_string())
+            }
+            AppError::NotFound(error) => {
+                log::error!("[not_found]: {:?}", error);
+                Status::new(Code::NotFound, error.to_string())
+            }
+            AppError::BadRequest(error) => {
+                log::error!("[bad_request]: {:?}", error);
+                Status::new(Code::InvalidArgument, error.to_string())
+            }
+            AppError::UniqueViolation(error) => {
+                log::error!("[unique_violation]: {:?}", error);
+                Status::new(Code::AlreadyExists, error.to_string())
+            }
+            AppError::Unauthorized(error) => {
+                log::error!("[unauthorized]: {:?}", error);
+                Status::new(Code::PermissionDenied, error.to_string())
+            }
+            AppError::InvalidProvider(error) => {
+                log::error!("[invalid_provider]: {:?}", error);
+                Status::new(Code::InvalidArgument, error.to_string())
+            }
+            AppError::OTPRequired(error) => {
+                log::error!("[otp_required]: {:?}", error);
+                Status::new(Code::FailedPrecondition, error.to_string())
+            }
+            AppError::OTPInvalid(error) => {
+                log::error!("[otp_invalid]: {:?}", error);
+                Status::new(Code::InvalidArgument, error.to_string())
+            }
+            AppError::IncorrectCredentials(error) => {
+                log::error!("[incorrect_credentials]: {:?}", error);
+                Status::new(Code::PermissionDenied, error.to_string())
+            }
+            AppError::Validation(error) => {
+                log::error!("validation_error: {:?}", error);
+                Status::new(Code::FailedPrecondition, error.to_string())
+            }
+            AppError::Other(error) => {
+                log::error!("[other_error]: {:?}", error);
+                Status::new(Code::Internal, error.to_string())
+            }
+        }
     }
 }

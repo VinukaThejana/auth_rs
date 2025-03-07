@@ -100,7 +100,11 @@ pub struct Env {
     ))]
     pub reauth_token_expiration: usize,
 
-    #[validate(range(min = 8080, max = 8090, message = "PORT must be between 8080 and 8090"))]
+    #[validate(range(
+        min = 50050,
+        max = 50060,
+        message = "PORT must be between 8080 and 8090"
+    ))]
     pub port: u16,
 }
 
