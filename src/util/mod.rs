@@ -3,6 +3,42 @@ pub mod verify;
 use base64::prelude::*;
 use serde::{Deserialize, Deserializer};
 use std::{sync::Arc, time::SystemTime};
+use tokio::signal::{self};
+
+pub async fn shutdown_signal() {
+    let ctrl_c = async {
+        signal::ctrl_c()
+            .await
+            .expect("failed to listen for ctrl-c signal");
+    };
+
+    #[cfg(unix)]
+    let terminate = async {
+        use tokio::signal::unix::{SignalKind, signal};
+
+        signal(SignalKind::terminate())
+            .expect("failed to install the SIGTERM handler")
+            .recv()
+            .await;
+
+        signal(SignalKind::interrupt())
+            .expect("failed to install the SIGINT handler")
+            .recv()
+            .await;
+    };
+
+    #[cfg(not(unix))]
+    let terminate = std::future::pending::<()>();
+
+    tokio::select! {
+        _ = ctrl_c => {
+            println!("\nreceived ctrl-c signal, shutting down ... ");
+        },
+            _ = terminate => {
+            println!("\nreceived terminate signal, shutting down ... ");
+        }
+    }
+}
 
 pub fn deserialize_base64<'de, D>(deserializer: D) -> Result<Arc<Vec<u8>>, D::Error>
 where

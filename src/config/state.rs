@@ -2,7 +2,7 @@ use std::{process::exit, time::Duration};
 
 use envmode::EnvMode;
 use redis::{Client as RedisClient, RedisError, aio::MultiplexedConnection};
-use sea_orm::{ConnectOptions, Database, DatabaseConnection};
+use sea_orm::{ConnectOptions, Database, DatabaseConnection, DbErr};
 
 use super::ENV;
 
@@ -47,5 +47,11 @@ impl AppState {
         });
 
         Self { db, rd }
+    }
+}
+
+impl AppState {
+    pub async fn shutdown(self) -> Result<(), DbErr> {
+        self.db.close().await
     }
 }
