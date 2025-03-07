@@ -3,6 +3,8 @@ use std::fmt::{Display, Formatter, Result};
 use tonic::{Code, Status};
 use validator::ValidationErrors;
 
+use crate::token::error::TokenError;
+
 #[derive(Debug, thiserror::Error)]
 pub enum AppError {
     Database(#[from] DbErr),
@@ -77,8 +79,8 @@ impl AppError {
         Self::Other(anyhow::Error::new(error))
     }
 
-    pub fn from_database_error(err: DbErr) -> Self {
-        match err {
+    pub fn from_database_error(error: DbErr) -> Self {
+        match error {
             DbErr::RecordNotFound(err) => Self::NotFound(anyhow::anyhow!(err)),
             err => {
                 if is_unique_violation(&err) {
@@ -87,6 +89,16 @@ impl AppError {
                     Self::Database(err)
                 }
             }
+        }
+    }
+
+    pub fn from_token_error(error: TokenError) -> Self {
+        match error {
+            TokenError::MissingClaims(source)
+            | TokenError::InvalidFormat(source)
+            | TokenError::Parsing(source)
+            | TokenError::Validation(source) => Self::BadRequest(anyhow::anyhow!(source)),
+            _ => Self::Other(error.into()),
         }
     }
 }
