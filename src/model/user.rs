@@ -32,10 +32,10 @@ impl From<RegisterRequest> for CreateUserReq {
     }
 }
 
-#[derive(Debug, Validate, Serialize, Deserialize)]
+#[derive(Debug, Validate, Serialize, Deserialize, Clone)]
 pub struct UserDetails {
     #[validate(length(min = 26, max = 26, message = "id must be 26 characters"))]
-    id: String,
+    pub id: String,
 
     #[validate(email(message = "not valid"))]
     pub email: String,
