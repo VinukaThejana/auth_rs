@@ -1,6 +1,6 @@
 use sea_orm::{
-    ActiveModelTrait, DatabaseConnection, DbErr, EntityTrait, QueryFilter, QuerySelect, Set,
-    TransactionTrait, entity::*,
+    ActiveModelTrait, Database, DatabaseConnection, DbErr, EntityTrait, QueryFilter, QuerySelect,
+    Set, TransactionTrait, entity::*,
 };
 
 pub async fn create(
@@ -46,5 +46,20 @@ pub async fn create(
     let _ = user_provider.insert(&txn).await?;
 
     txn.commit().await?;
+    Ok(user)
+}
+
+pub async fn get_by_email(
+    db: &DatabaseConnection,
+    email: &str,
+) -> Result<entity::user::Model, DbErr> {
+    let user = entity::user::Entity::find()
+        .filter(entity::user::Column::Email.eq(email))
+        .one(db)
+        .await?;
+    let user = user.ok_or(DbErr::RecordNotFound(String::from(
+        "user with the given email does not exist",
+    )))?;
+
     Ok(user)
 }
