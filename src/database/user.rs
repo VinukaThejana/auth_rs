@@ -1,6 +1,6 @@
 use sea_orm::{
-    ActiveModelTrait, Database, DatabaseConnection, DbErr, EntityTrait, QueryFilter, QuerySelect,
-    Set, TransactionTrait, entity::*,
+    ActiveModelTrait, DatabaseConnection, DbErr, EntityTrait, QueryFilter, Set, TransactionTrait,
+    entity::*,
 };
 
 pub async fn create(
@@ -59,6 +59,25 @@ pub async fn get_by_email(
         .await?;
     let user = user.ok_or(DbErr::RecordNotFound(String::from(
         "user with the given email does not exist",
+    )))?;
+
+    Ok(user)
+}
+
+pub async fn get_by_credential(
+    db: &DatabaseConnection,
+    credential: &str,
+) -> Result<entity::user::Model, DbErr> {
+    let user = entity::user::Entity::find()
+        .filter(
+            entity::user::Column::Email
+                .eq(credential)
+                .or(entity::user::Column::Username.eq(credential)),
+        )
+        .one(db)
+        .await?;
+    let user = user.ok_or(DbErr::RecordNotFound(String::from(
+        "user with the given credential does not exist",
     )))?;
 
     Ok(user)
