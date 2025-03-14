@@ -2,6 +2,8 @@
 
 pub mod prelude;
 
+pub mod admin;
+pub mod admin_api_key;
 pub mod provider;
 pub mod session;
 pub mod user;

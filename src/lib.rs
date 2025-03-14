@@ -9,3 +9,7 @@ pub mod util;
 pub mod auth_proto {
     tonic::include_proto!("auth");
 }
+
+pub mod admin_proto {
+    tonic::include_proto!("admin");
+}
