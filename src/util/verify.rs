@@ -37,7 +37,7 @@ pub fn username(username: &str) -> Result<(), ValidationError> {
         (username.len() < 3, "must be at least 3 characters"),
         (username.len() > 20, "must be smaller than 20 characters"),
         (
-            username.chars().all(|c| c.is_alphanumeric()),
+            !username.chars().all(|c| c.is_alphanumeric()),
             "must contain only alphanumeric characters",
         ),
     ];

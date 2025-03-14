@@ -8,9 +8,14 @@ use tonic::transport::Server;
 async fn main() -> anyhow::Result<()> {
     let state = AppState::new().await;
 
+    println!("server running on [::1]:{}", ENV.port);
+
     Server::builder()
         .add_service(AuthServiceServer::new(auth::Service::new(state.clone())))
-        .serve_with_shutdown(format!("[::1]:{}", ENV.port).parse()?, shutdown_signal())
+        .serve_with_shutdown(
+            format!("127.0.0.1:{}", ENV.port).parse()?,
+            shutdown_signal(),
+        )
         .await?;
 
     println!("closing connections ... ");

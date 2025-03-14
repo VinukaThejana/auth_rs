@@ -16,7 +16,7 @@ pub async fn create(
 
     let user = entity::user::ActiveModel {
         email: Set(email.to_owned()),
-        username: Set(username.to_owned()),
+        username: Set(username.to_owned().to_lowercase()),
         name: Set(name.to_owned()),
         photo_url: Set(match photo_url {
             Some(photo_url) => Some(photo_url.to_owned()),
@@ -54,7 +54,7 @@ pub async fn get_by_email(
     email: &str,
 ) -> Result<entity::user::Model, DbErr> {
     let user = entity::user::Entity::find()
-        .filter(entity::user::Column::Email.eq(email))
+        .filter(entity::user::Column::Email.eq(email.to_lowercase()))
         .one(db)
         .await?;
     let user = user.ok_or(DbErr::RecordNotFound(String::from(
@@ -68,11 +68,12 @@ pub async fn get_by_credential(
     db: &DatabaseConnection,
     credential: &str,
 ) -> Result<entity::user::Model, DbErr> {
+    let credential = credential.to_lowercase();
     let user = entity::user::Entity::find()
         .filter(
             entity::user::Column::Email
-                .eq(credential)
-                .or(entity::user::Column::Username.eq(credential)),
+                .eq(&credential)
+                .or(entity::user::Column::Username.eq(&credential)),
         )
         .one(db)
         .await?;

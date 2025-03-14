@@ -154,7 +154,7 @@ impl AuthService for Service {
         &self,
         request: Request<RefreshRequest>,
     ) -> Result<Response<RefreshResponse>, Status> {
-        let request = request.into_inner();
+        let _request = request.into_inner();
 
         todo!()
     }
@@ -163,7 +163,7 @@ impl AuthService for Service {
         &self,
         request: Request<ReauthTokenRequest>,
     ) -> Result<Response<ReauthTokenResponse>, Status> {
-        let request = request.into_inner();
+        let _request = request.into_inner();
 
         todo!()
     }
@@ -172,7 +172,7 @@ impl AuthService for Service {
         &self,
         request: Request<LogoutRequest>,
     ) -> Result<Response<LogoutResponse>, Status> {
-        let request = request.into_inner();
+        let _request = request.into_inner();
 
         todo!()
     }
@@ -181,7 +181,7 @@ impl AuthService for Service {
         &self,
         request: Request<DeleteRequest>,
     ) -> Result<Response<DeleteResponse>, Status> {
-        let request = request.into_inner();
+        let _request = request.into_inner();
 
         todo!()
     }
@@ -190,7 +190,7 @@ impl AuthService for Service {
         &self,
         request: Request<SendEmailVerificationRequest>,
     ) -> Result<Response<SendEmailVerificationResponse>, Status> {
-        let request = request.into_inner();
+        let _request = request.into_inner();
 
         todo!()
     }
@@ -199,7 +199,7 @@ impl AuthService for Service {
         &self,
         request: Request<SendEmailVerificationForNewEmailRequest>,
     ) -> Result<Response<SendEmailVerificationForNewEmailResponse>, Status> {
-        let request = request.into_inner();
+        let _request = request.into_inner();
 
         todo!()
     }
@@ -208,7 +208,7 @@ impl AuthService for Service {
         &self,
         request: Request<VerifyTokenRequest>,
     ) -> Result<Response<VerifyTokenResponse>, Status> {
-        let request = request.into_inner();
+        let _request = request.into_inner();
 
         todo!()
     }
@@ -217,7 +217,7 @@ impl AuthService for Service {
         &self,
         request: Request<VerifyEmailTokenRequest>,
     ) -> Result<Response<VerifyEmailTokenResponse>, Status> {
-        let request = request.into_inner();
+        let _request = request.into_inner();
 
         todo!()
     }
@@ -226,7 +226,7 @@ impl AuthService for Service {
         &self,
         request: Request<VerifyForgotPasswordTokenRequest>,
     ) -> Result<Response<VerifyForgotPasswordTokenResponse>, Status> {
-        let request = request.into_inner();
+        let _request = request.into_inner();
 
         todo!()
     }
@@ -235,7 +235,7 @@ impl AuthService for Service {
         &self,
         request: Request<ForgotPasswordRequest>,
     ) -> Result<Response<ForgotPasswordResponse>, Status> {
-        let request = request.into_inner();
+        let _request = request.into_inner();
 
         todo!()
     }
@@ -244,7 +244,7 @@ impl AuthService for Service {
         &self,
         request: Request<ResetPasswordResponse>,
     ) -> Result<Response<ResetPasswordResponse>, Status> {
-        let request = request.into_inner();
+        let _request = request.into_inner();
 
         todo!()
     }
@@ -253,7 +253,7 @@ impl AuthService for Service {
         &self,
         request: Request<ChangeEmailRequest>,
     ) -> Result<Response<ChangeEmailResponse>, Status> {
-        let request = request.into_inner();
+        let _request = request.into_inner();
 
         todo!()
     }
@@ -262,7 +262,7 @@ impl AuthService for Service {
         &self,
         request: Request<ChangeUsernameRequest>,
     ) -> Result<Response<ChangeUsernameResponse>, Status> {
-        let request = request.into_inner();
+        let _request = request.into_inner();
 
         todo!()
     }
@@ -271,7 +271,7 @@ impl AuthService for Service {
         &self,
         request: Request<ChangePasswordRequest>,
     ) -> Result<Response<ChangePasswordResponse>, Status> {
-        let request = request.into_inner();
+        let _request = request.into_inner();
 
         todo!()
     }
