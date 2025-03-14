@@ -1,15 +1,15 @@
-use std::{process::exit, time::Duration};
-
+use super::ENV;
 use envmode::EnvMode;
 use redis::{Client as RedisClient, RedisError, aio::MultiplexedConnection};
+use resend_rs::Resend;
 use sea_orm::{ConnectOptions, Database, DatabaseConnection, DbErr};
-
-use super::ENV;
+use std::{process::exit, time::Duration};
 
 #[derive(Clone)]
 pub struct AppState {
     pub db: DatabaseConnection,
     pub rd: RedisClient,
+    pub resend: Resend,
 }
 
 impl AppState {
@@ -45,8 +45,9 @@ impl AppState {
             log::error!("Failed to connect to redis: {}", e);
             exit(1);
         });
+        let resend = Resend::new(&ENV.resend_api);
 
-        Self { db, rd }
+        Self { db, rd, resend }
     }
 }
 
