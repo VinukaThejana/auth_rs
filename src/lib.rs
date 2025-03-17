@@ -3,6 +3,7 @@ pub mod database;
 pub mod error;
 pub mod model;
 pub mod service;
+pub mod template;
 pub mod token;
 pub mod util;
 
