@@ -1,6 +1,7 @@
 pub mod verify;
 
 use base64::prelude::*;
+use rand::Rng;
 use serde::{Deserialize, Deserializer};
 use std::{sync::Arc, time::SystemTime};
 use tokio::signal::{self};
@@ -76,4 +77,11 @@ pub fn time_since_epoch() -> Result<i64, anyhow::Error> {
         .as_secs()
         .try_into()
         .map_err(|err| anyhow::Error::new(err).context("failed to convert time to i64"))
+}
+
+pub fn generate_otp() -> String {
+    let mut rng = rand::rng();
+    (0..6)
+        .map(|_| rng.random_range(0..=9).to_string())
+        .collect()
 }
