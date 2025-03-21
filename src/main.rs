@@ -1,7 +1,11 @@
+use auth_rs::admin_proto::admin_service_server::AdminServiceServer;
 use auth_rs::auth_proto::auth_service_server::AuthServiceServer;
 use auth_rs::config::state::AppState;
 use auth_rs::util::shutdown_signal;
-use auth_rs::{config::ENV, service::auth};
+use auth_rs::{
+    config::ENV,
+    service::{admin, auth},
+};
 use tonic::transport::Server;
 
 #[tokio::main]
@@ -12,6 +16,7 @@ async fn main() -> anyhow::Result<()> {
 
     Server::builder()
         .add_service(AuthServiceServer::new(auth::Service::new(state.clone())))
+        .add_service(AdminServiceServer::new(admin::Service::new(state.clone())))
         .serve_with_shutdown(
             format!("127.0.0.1:{}", ENV.port).parse()?,
             shutdown_signal(),
