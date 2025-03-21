@@ -40,6 +40,10 @@ pub struct Env {
     #[serde(deserialize_with = "deserialize_arc_str")]
     pub ipinfo_api_key: Arc<str>,
 
+    #[validate(length(min = 1, message = "RESEND_EMAIL is required"))]
+    #[serde(deserialize_with = "deserialize_arc_str")]
+    pub resend_email: Arc<str>,
+
     #[validate(length(min = 1, message = "RESEND_API is required"))]
     #[serde(deserialize_with = "deserialize_arc_str")]
     pub resend_api: Arc<str>,
