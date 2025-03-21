@@ -6,6 +6,8 @@ use serde::{Deserialize, Deserializer};
 use std::{sync::Arc, time::SystemTime};
 use tokio::signal::{self};
 
+use crate::{config::state::AppState, error::AppError};
+
 pub fn now() -> usize {
     SystemTime::now()
         .duration_since(SystemTime::UNIX_EPOCH)
@@ -84,4 +86,24 @@ pub fn generate_otp() -> String {
     (0..6)
         .map(|_| rng.random_range(0..=9).to_string())
         .collect()
+}
+
+pub async fn validate_otp(state: AppState, key: &str, otp: &str) -> Result<(), AppError> {
+    let mut conn = state.get_redis_conn().await.map_err(AppError::Other)?;
+
+    let value: Option<String> = redis::pipe()
+        .arg("GET")
+        .arg(key)
+        .arg("DEL")
+        .arg(key)
+        .ignore()
+        .query_async(&mut conn)
+        .await
+        .map_err(|err| AppError::Other(err.into()))?;
+    let value = value.ok_or(AppError::OTPInvalid(anyhow::anyhow!("otp is invalid")))?;
+    if value != otp {
+        return Err(AppError::OTPInvalid(anyhow::anyhow!("otp is invalid")));
+    }
+
+    Ok(())
 }
